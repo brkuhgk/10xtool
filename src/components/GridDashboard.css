@@ -1,0 +1,545 @@
+/* GridDashboard.css */
+
+/* Base styles */
+.grid-dashboard {
+    background-color: #0F172A;
+    color: #E2E8F0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  /* React Grid Layout styles enhancement */
+  .react-grid-layout {
+    background-color: #0F172A;
+    position: relative;
+    transition: height 200ms ease;
+  }
+  
+  .react-grid-item {
+    transition: all 200ms ease;
+    transition-property: left, top, width, height;
+    background-color: transparent;
+    overflow: hidden;
+  }
+  
+  .react-grid-item.react-grid-placeholder {
+    background: rgba(139, 92, 246, 0.2);
+    border: 2px dashed #8B5CF6;
+    border-radius: 0.5rem;
+    opacity: 0.6;
+    z-index: 10;
+    transition-duration: 100ms;
+    pointer-events: none;
+    user-select: none;
+  }
+  
+  .react-grid-item.react-draggable-dragging {
+    z-index: 20;
+    opacity: 0.9;
+    cursor: move;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(139, 92, 246, 0.5);
+    transition: none;
+  }
+  
+  .react-grid-item.react-resizable-resizing {
+    z-index: 20;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(139, 92, 246, 0.5);
+  }
+  
+  .react-resizable-handle {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(139, 92, 246, 0.3);
+    border-radius: 50%;
+    padding: 0;
+    z-index: 10;
+    cursor: se-resize;
+    transition: all 0.2s ease;
+  }
+  
+  .react-resizable-handle:hover {
+    background-color: rgba(139, 92, 246, 0.7);
+    transform: scale(1.2);
+  }
+  
+  /* Card styles */
+  .dashboard-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #1E293B;
+    border-radius: 0.5rem;
+    padding: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    overflow: hidden;
+  }
+  
+  .dashboard-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .react-grid-item.react-draggable-dragging .dashboard-card {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(139, 92, 246, 0.5);
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: move;
+    user-select: none;
+  }
+  
+  .card-header h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .card-content {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 92, 246, 0.5) rgba(15, 23, 42, 0.1);
+  }
+  
+  /* Layout controls */
+  .layout-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    background-color: #1E293B;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    position: sticky;
+    top: 0;
+  }
+  
+  .layout-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #8B5CF6;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .layout-btn:hover {
+    background-color: #7C3AED;
+    transform: translateY(-1px);
+  }
+  
+  .layout-btn:active {
+    transform: translateY(1px);
+  }
+  
+  /* Pomodoro specific */
+  .pomodoro-cell {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 0.125rem;
+  }
+  
+  .grid-cols-28 {
+    display: grid;
+    grid-template-columns: repeat(28, 1fr);
+    gap: 2px;
+  }
+  
+  .pomodoro-circle {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    border: 4px solid #8B5CF6; /* Purple instead of red */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    background-color: rgba(139, 92, 246, 0.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pomodoro-circle:hover {
+    background-color: rgba(139, 92, 246, 0.15);
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(139, 92, 246, 0.2);
+  }
+  
+  .pomodoro-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+  }
+  
+  /* Task list styles */
+  .task-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+  }
+  
+  .task-tag {
+    font-size: 0.75rem;
+    color: #8B5CF6;
+  }
+  
+  .task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+  }
+  
+  .task-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .subtask-group {
+    margin-bottom: 1rem;
+  }
+  
+  .subtask-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .subtask-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0 1.5rem;
+  }
+  
+  .subtask-item {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Input styles */
+  .input {
+    width: 100%;
+    background-color: #2D3748;
+    border: 1px solid #4A5568;
+    border-radius: 0.375rem;
+    padding: 0.625rem 0.875rem;
+    color: #E2E8F0;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+  }
+  
+  .input::placeholder {
+    color: #718096;
+  }
+  
+  .input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+    border-color: #8B5CF6;
+    background-color: #2D3748;
+  }
+  
+  /* Calendar styles */
+  .calendar-day {
+    text-align: center;
+    padding: 0.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .calendar-day:hover {
+    background-color: rgba(139, 92, 246, 0.2);
+    border-radius: 9999px;
+  }
+  
+  .calendar-day.today {
+    background-color: #8B5CF6;
+    color: white;
+    border-radius: 9999px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.4);
+  }
+  
+  /* Button styles */
+  .button {
+    background-color: #8B5CF6;
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(139, 92, 246, 0.2);
+  }
+  
+  .button:hover {
+    background-color: #7C3AED;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(139, 92, 246, 0.4);
+  }
+  
+  .button.active {
+    background-color: #6D28D9;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
+  }
+  
+  button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  button:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Theme toggle button */
+  .theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    color: #CBD5E1;
+    background-color: #334155;
+    transition: all 0.3s ease;
+    margin-right: 0.75rem;
+  }
+  
+  .theme-toggle-btn:hover {
+    background-color: #475569;
+    transform: rotate(15deg);
+    color: #F1F5F9;
+  }
+  
+  /* Light theme styles */
+  .light-theme {
+    background-color: #F8FAFC;
+    color: #1E293B;
+  }
+  
+  .light-theme .dashboard-card {
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+  
+  .light-theme .card-header {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .light-theme .layout-controls {
+    background-color: #FFFFFF;
+  }
+  
+  .light-theme .pomodoro-cell.bg-gray-700 {
+    background-color: #E2E8F0;
+  }
+  
+  .light-theme .task-item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+  
+  .light-theme .input {
+    background-color: #F1F5F9;
+    border-color: #CBD5E1;
+    color: #1E293B;
+  }
+  
+  .light-theme .input::placeholder {
+    color: #64748B;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .react-grid-layout {
+      margin: 0 !important;
+    }
+    
+    .layout-controls {
+      position: static;
+      margin-bottom: 0.5rem;
+    }
+    
+    .layout-btn {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+    
+    .card-header {
+      padding: 0.5rem;
+    }
+    
+    .card-content {
+      padding: 0.5rem;
+    }
+  }
+  
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.1);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.5);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.7);
+  }
+  
+  /* Utility classes */
+  .text-red-500 {
+    color: #8B5CF6; /* Purple instead of red */
+  }
+  
+  .text-yellow-500 {
+    color: #10B981; /* Emerald instead of yellow */
+  }
+  
+  .text-blue-500 {
+    color: #3B82F6; /* Keeping blue */
+  }
+  
+  .text-green-500 {
+    color: #F59E0B; /* Amber instead of green */
+  }
+  
+  .text-purple-500 {
+    color: #EC4899; /* Pink instead of purple */
+  }
+  
+  .text-gray-400 {
+    color: #9CA3AF;
+  }
+  
+  .text-gray-500 {
+    color: #6B7280;
+  }
+  
+  .bg-red-500 {
+    background-color: #8B5CF6; /* Purple instead of red */
+  }
+  
+  .bg-red-600 {
+    background-color: #7C3AED; /* Darker purple */
+  }
+  
+  .bg-blue-400 {
+    background-color: #34D399; /* Emerald/Teal instead of blue */
+  }
+  
+  .bg-gray-600 {
+    background-color: #4B5563;
+  }
+  
+  .bg-gray-700 {
+    background-color: #374151;
+  }
+  
+  /* Flexbox and spacing utilities */
+  .flex {
+    display: flex;
+  }
+  
+  .items-center {
+    align-items: center;
+  }
+  
+  .justify-between {
+    justify-content: space-between;
+  }
+  
+  .justify-center {
+    justify-content: center;
+  }
+  
+  .gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .gap-4 {
+    gap: 1rem;
+  }
+  
+  .text-xs {
+    font-size: 0.75rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .text-xl {
+    font-size: 1.25rem;
+  }
+  
+  .mt-2 {
+    margin-top: 0.5rem;
+  }
+  
+  .mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .mb-2 {
+    margin-bottom: 0.5rem;
+  }
+  
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+  
+  .ml-2 {
+    margin-left: 0.5rem;
+  }
+  
+  .ml-4 {
+    margin-left: 1rem;
+  }
+  
+  .font-bold {
+    font-weight: 700;
+  }
+  
+  .font-semibold {
+    font-weight: 600;
+  }
