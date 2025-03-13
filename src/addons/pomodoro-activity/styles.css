@@ -1,0 +1,76 @@
+.pomodoro-activity {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .activity-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .activity-icon {
+    color: #8B5CF6;
+  }
+  
+  .activity-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #8B5CF6;
+    margin: 0;
+  }
+  
+  .months-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .month-label {
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+  
+  .activity-grid {
+    display: grid;
+    grid-template-columns: repeat(28, 1fr);
+    gap: 2px;
+    flex-grow: 1;
+  }
+  
+  .activity-cell {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 0.125rem;
+  }
+  
+  .activity-none {
+    background-color: #374151;
+  }
+  
+  .activity-low {
+    background-color: #8B5CF6;
+  }
+  
+  .activity-high {
+    background-color: #7C3AED;
+  }
+  
+  .activity-legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  
+  .legend-label {
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+  
+  /* Light theme overrides */
+  :global(.light-theme) .activity-none {
+    background-color: #E2E8F0;
+  }

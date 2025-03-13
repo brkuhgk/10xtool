@@ -1,0 +1,474 @@
+.focus-music-addon {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .music-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .music-icon {
+    color: #3B82F6; /* Blue */
+  }
+  
+  .music-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3B82F6;
+    margin: 0;
+  }
+  
+  .music-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .timer-display {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+  }
+  
+  .music-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 0.25rem;
+    color: #9CA3AF;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .music-action-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #E2E8F0;
+  }
+  
+  .music-action-btn.active {
+    background-color: #3B82F6;
+    color: white;
+  }
+  
+  .collection-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  .collection-tabs::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
+  
+  .collection-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 1rem;
+    color: #E2E8F0;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  .collection-tab:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .collection-tab.active {
+    background-color: #3B82F6;
+    color: white;
+  }
+  
+  .sounds-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+  
+  .sound-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 0.375rem;
+    color: #E2E8F0;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .sound-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .sound-item.active {
+    background-color: rgba(59, 130, 246, 0.2);
+    border-left: 3px solid #3B82F6;
+  }
+  
+  .playing-indicator {
+    font-size: 0.75rem;
+    color: #3B82F6;
+  }
+  
+  .music-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+  }
+  
+  .music-control-btns {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 50%;
+    color: #E2E8F0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .control-btn:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+  }
+  
+  .control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .play-btn {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .play-btn svg {
+    margin-right: -2px;
+  }
+  
+  .control-btn:not(.play-btn) {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .volume-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: #9CA3AF;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .volume-btn:hover {
+    color: #E2E8F0;
+  }
+  
+  .volume-slider {
+    width: 80px;
+    height: 4px;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+  }
+  
+  .volume-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #3B82F6;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #3B82F6;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .now-playing {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+  
+  .playing-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .playing-collection {
+    color: #3B82F6;
+  }
+  
+  .playing-divider {
+    opacity: 0.5;
+  }
+  
+  .playing-sound {
+    font-weight: 500;
+  }
+  
+  .playing-timer {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  .no-sound {
+    opacity: 0.7;
+    font-style: italic;
+  }
+  
+  /* Settings Panel */
+  .music-settings {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  
+  .settings-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3B82F6;
+    margin: 0 0 1rem 0;
+  }
+  
+  .setting-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .setting-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #E2E8F0;
+    margin-bottom: 0.75rem;
+  }
+  
+  .setting-label svg {
+    color: #9CA3AF;
+  }
+  
+  .timer-controls {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .timer-select {
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
+    color: #E2E8F0;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 16px;
+    padding-right: 2rem;
+  }
+  
+  .timer-select:focus {
+    outline: none;
+    border-color: #3B82F6;
+  }
+  
+  .timer-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .timer-btn {
+    background-color: #3B82F6;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .timer-btn:hover {
+    background-color: #2563EB;
+  }
+  
+  .timer-btn.active {
+    background-color: #DC2626;
+  }
+  
+  .timer-btn.active:hover {
+    background-color: #B91C1C;
+  }
+  
+  .close-settings-btn {
+    margin-top: auto;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 0.375rem;
+    color: #E2E8F0;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .close-settings-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Custom scrollbar */
+  .sounds-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .sounds-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+  }
+  
+  .sounds-list::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 3px;
+  }
+  
+  .sounds-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.7);
+  }
+  
+  /* Light theme overrides */
+  :global(.light-theme) .music-action-btn {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #6B7280;
+  }
+  
+  :global(.light-theme) .music-action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .collection-tab {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .collection-tab:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  :global(.light-theme) .sound-item {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .sound-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  :global(.light-theme) .sound-item.active {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+  
+  :global(.light-theme) .music-controls {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  :global(.light-theme) .control-btn {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .control-btn:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  :global(.light-theme) .volume-slider {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  :global(.light-theme) .setting-label {
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .timer-select {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .close-settings-btn {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .close-settings-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }

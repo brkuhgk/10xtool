@@ -1,0 +1,199 @@
+.pomodoro-counter {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .pomodoro-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .pomodoro-icon {
+    color: #8B5CF6;
+  }
+  
+  .pomodoro-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #8B5CF6;
+    margin: 0;
+  }
+  
+  .pomodoro-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .pomodoro-tab {
+    flex: 1;
+    background-color: #2D3748;
+    color: #E2E8F0;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .pomodoro-tab:hover {
+    background-color: #4A5568;
+  }
+  
+  .pomodoro-tab.active {
+    background-color: #8B5CF6;
+    color: white;
+    font-weight: 500;
+  }
+  
+  .timer-display-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    margin: 1rem 0;
+  }
+  
+  .timer-progress {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .timer-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: #1E293B;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .timer-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #E2E8F0;
+    margin-bottom: 0.25rem;
+  }
+  
+  .timer-mode {
+    font-size: 0.875rem;
+    color: #9CA3AF;
+  }
+  
+  .timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .timer-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: #2D3748;
+    border: none;
+    border-radius: 50%;
+    color: #8B5CF6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .timer-btn:hover {
+    background-color: #4A5568;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  }
+  
+  .timer-btn:active {
+    transform: translateY(0);
+  }
+  
+  .pomodoro-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+  }
+  
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #E2E8F0;
+    font-size: 0.875rem;
+  }
+  
+  .stat-item svg {
+    color: #8B5CF6;
+  }
+  
+  .pomodoro-tracker {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .pomodoro-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #374151;
+    transition: all 0.3s ease;
+  }
+  
+  .pomodoro-dot.completed {
+    background-color: #8B5CF6;
+    transform: scale(1.1);
+  }
+  
+  /* Light theme overrides */
+  :global(.light-theme) .timer-circle {
+    background-color: #F1F5F9;
+  }
+  
+  :global(.light-theme) .timer-display {
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .pomodoro-tab {
+    background-color: #E2E8F0;
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .pomodoro-tab:hover {
+    background-color: #CBD5E1;
+  }
+  
+  :global(.light-theme) .timer-btn {
+    background-color: #F1F5F9;
+  }
+  
+  :global(.light-theme) .timer-btn:hover {
+    background-color: #E2E8F0;
+  }
+  
+  :global(.light-theme) .pomodoro-dot {
+    background-color: #CBD5E1;
+  }
+  
+  :global(.light-theme) .stat-item {
+    color: #1E293B;
+  }

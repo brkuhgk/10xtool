@@ -1,69 +1,144 @@
 import React, { useState, useEffect } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-import { Calendar, Clock, CheckCircle, Circle, AlertTriangle, BarChart2, Briefcase, Play, Pause, X, Moon, Sun } from 'lucide-react';
-import classNames from 'classnames';
-import _ from 'lodash';
-
-// Import CSS files from react-grid-layout
+import { Plus, RotateCcw, Save, Moon, Sun, Settings, Trash2 } from 'lucide-react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './GridDashboard.css';
+import ErrorBoundary from '../components/ErrorBoundary';
 
-// Create a responsive grid layout with automatic width calculation
+// Import addon services
+import {
+  initializeAddonManager,
+  getAvailableAddons,
+  getAddonById,
+  getActiveAddons,
+  addAddonToDashboard,
+  removeAddonFromDashboard,
+  getDefaultLayout,
+  saveUserLayout,
+  loadUserLayout,
+  resetUserLayout,
+  getAddonInstanceData,
+  updateAddonInstance
+} from '../services/addon-manager';
+
+// Import grid configuration
+import { GRID_CONFIG } from '../services/layout-constants';
+
+// Import addons registry
+import ADDONS from '../addons';
+
+// Initialize addon manager
+initializeAddonManager(ADDONS);
+
+// Create responsive grid layout with width provider
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-// Default layouts for different breakpoints
-const DEFAULT_LAYOUTS = {
-  lg: [
-    { i: 'pomodoroActivity', x: 0, y: 0, w: 6, h: 8, minW: 4, minH: 6 },
-    { i: 'calendar', x: 0, y: 8, w: 3, h: 8, minW: 3, minH: 6 },
-    { i: 'position', x: 3, y: 8, w: 3, h: 4, minW: 2, minH: 4 },
-    { i: 'workMode', x: 3, y: 12, w: 3, h: 4, minW: 2, minH: 3 },
-    { i: 'quickNote', x: 6, y: 0, w: 3, h: 4, minW: 2, minH: 3 },
-    { i: 'completedTasks', x: 6, y: 4, w: 6, h: 12, minW: 3, minH: 6 },
-    { i: 'todoTasks', x: 12, y: 0, w: 6, h: 8, minW: 3, minH: 6 },
-    { i: 'overdueTasks', x: 12, y: 8, w: 6, h: 8, minW: 3, minH: 6 },
-    { i: 'pomodoroCounter', x: 0, y: 16, w: 3, h: 10, minW: 3, minH: 8 }
-  ],
-  md: [
-    { i: 'pomodoroActivity', x: 0, y: 0, w: 6, h: 7, minW: 4, minH: 6 },
-    { i: 'calendar', x: 0, y: 7, w: 3, h: 7, minW: 3, minH: 6 },
-    { i: 'position', x: 3, y: 7, w: 3, h: 3, minW: 2, minH: 3 },
-    { i: 'workMode', x: 3, y: 10, w: 3, h: 4, minW: 2, minH: 3 },
-    { i: 'quickNote', x: 6, y: 0, w: 3, h: 3, minW: 2, minH: 3 },
-    { i: 'completedTasks', x: 6, y: 3, w: 6, h: 11, minW: 3, minH: 6 },
-    { i: 'todoTasks', x: 0, y: 14, w: 6, h: 8, minW: 3, minH: 6 },
-    { i: 'overdueTasks', x: 6, y: 14, w: 6, h: 8, minW: 3, minH: 6 },
-    { i: 'pomodoroCounter', x: 9, y: 0, w: 3, h: 9, minW: 3, minH: 8 }
-  ],
-  sm: [
-    { i: 'pomodoroActivity', x: 0, y: 0, w: 6, h: 7, minW: 3, minH: 6 },
-    { i: 'calendar', x: 0, y: 7, w: 3, h: 7, minW: 3, minH: 6 },
-    { i: 'position', x: 3, y: 7, w: 3, h: 3, minW: 2, minH: 3 },
-    { i: 'workMode', x: 3, y: 10, w: 3, h: 4, minW: 2, minH: 3 },
-    { i: 'quickNote', x: 0, y: 14, w: 6, h: 3, minW: 2, minH: 3 },
-    { i: 'completedTasks', x: 0, y: 17, w: 6, h: 11, minW: 3, minH: 6 },
-    { i: 'todoTasks', x: 0, y: 28, w: 6, h: 8, minW: 3, minH: 6 },
-    { i: 'overdueTasks', x: 0, y: 36, w: 6, h: 8, minW: 3, minH: 6 },
-    { i: 'pomodoroCounter', x: 0, y: 44, w: 6, h: 9, minW: 3, minH: 8 }
-  ]
+// Dashboard Controls Component
+const DashboardControls = ({ 
+  onAddClick, 
+  onResetClick, 
+  onSaveClick, 
+  onThemeToggle, 
+  darkTheme 
+}) => {
+  return (
+    <div className="dashboard-controls">
+      <div className="control-group">
+        <button
+          className="control-btn add-btn" 
+          onClick={onAddClick} 
+          title="Add new addon"
+        >
+          <Plus size={16} className="btn-icon" />
+          <span className="btn-text">Add</span>
+        </button>
+        
+        <button 
+          className="control-btn reset-btn" 
+          onClick={onResetClick} 
+          title="Reset layout"
+        >
+          <RotateCcw size={16} className="btn-icon" />
+          <span className="btn-text">Reset</span>
+        </button>
+        
+        <button 
+          className="control-btn save-btn" 
+          onClick={onSaveClick} 
+          title="Save layout"
+        >
+          <Save size={16} className="btn-icon" />
+          <span className="btn-text">Save</span>
+        </button>
+      </div>
+      
+      <div className="control-group">
+        <button 
+          className="control-btn theme-btn" 
+          onClick={onThemeToggle} 
+          title={darkTheme ? "Switch to light theme" : "Switch to dark theme"}
+        >
+          {darkTheme ? <Sun size={16} className="btn-icon" /> : <Moon size={16} className="btn-icon" />}
+          <span className="btn-text">{darkTheme ? "Light" : "Dark"}</span>
+        </button>
+      </div>
+    </div>
+  );
 };
 
-// Custom card component with consistent styling
-const DashboardCard = ({ className, title, children, icon: Icon, accentColor = "text-red-500" }) => {
+// Dashboard Card Component with direct delete functionality
+const DashboardCard = ({ 
+  title, 
+  icon: Icon, 
+  children, 
+  onRemove, 
+  onEdit, 
+  id, 
+  customizable = false 
+}) => {
+  const handleRemove = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    if (onRemove) {
+      onRemove(id); // Call remove directly without confirmation
+    }
+  };
+
+  const handleEdit = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    if (onEdit) {
+      onEdit(id);
+    }
+  };
+
   return (
-    <div className={classNames('dashboard-card', className)}>
-      {title && (
-        <div className="card-header">
-          <div className={`flex items-center gap-2 ${accentColor}`}>
-            {Icon && <Icon size={18} />}
-            <h2 className="font-semibold">{title}</h2>
-          </div>
-          <div className="card-actions">
-            {/* Any action buttons can go here */}
-          </div>
+    <div className="dashboard-card">
+      <div className="card-header">
+        <div className="card-title">
+          {Icon && <Icon size={18} className="card-icon" />}
+          <h2>{title}</h2>
         </div>
-      )}
+        <div className="card-actions">
+          {customizable && (
+            <button 
+              className="card-action-btn" 
+              onClick={handleEdit} 
+              title="Edit"
+            >
+              <Settings size={14} />
+            </button>
+          )}
+          {onRemove && (
+            <button 
+              className="card-remove-btn" 
+              onClick={handleRemove} 
+              title="Remove"
+            >
+              <Trash2 size={14} />
+            </button>
+          )}
+        </div>
+      </div>
       <div className="card-content">
         {children}
       </div>
@@ -71,115 +146,318 @@ const DashboardCard = ({ className, title, children, icon: Icon, accentColor = "
   );
 };
 
+// Addon Picker Component
+const AddonPicker = ({ onAddAddon, onClose }) => {
+  const [filter, setFilter] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const addons = getAvailableAddons();
+  
+  // Get unique categories
+  const getCategories = () => {
+    const categories = addons.map(addon => addon.category);
+    return ['all', ...new Set(categories)];
+  };
+  
+  // Filter addons by search term and category
+  const filteredAddons = addons.filter(addon => {
+    // Filter by search term
+    const searchMatch = addon.name.toLowerCase().includes(filter.toLowerCase()) ||
+                        addon.description.toLowerCase().includes(filter.toLowerCase());
+    
+    // Filter by category
+    const categoryMatch = selectedCategory === 'all' || addon.category === selectedCategory;
+    
+    return searchMatch && categoryMatch;
+  });
+  
+  return (
+    <div className="addon-picker">
+      <div className="picker-header">
+        <h2>Add Addon</h2>
+        <button className="picker-close-btn" onClick={onClose}>×</button>
+      </div>
+      
+      <div className="picker-search">
+        <input
+          type="text"
+          placeholder="Search addons..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="picker-search-input"
+        />
+      </div>
+      
+      <div className="picker-categories">
+        {getCategories().map(category => (
+          <button
+            key={category}
+            className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </button>
+        ))}
+      </div>
+      
+      <div className="picker-addons">
+        {filteredAddons.length === 0 ? (
+          <div className="no-addons">No addons found</div>
+        ) : (
+          filteredAddons.map(addon => (
+            <div 
+              key={addon.id}
+              className="addon-item"
+              onClick={() => {
+                onAddAddon(addon.id);
+                onClose();
+              }}
+            >
+              <div className="addon-item-icon">
+                <addon.icon size={20} />
+              </div>
+              <div className="addon-item-info">
+                <h3>{addon.name}</h3>
+                <p>{addon.description}</p>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Addon Settings Modal Component
+const AddonSettings = ({ instanceId, onClose, onSave }) => {
+  // Initialize state with default empty values
+  const [title, setTitle] = useState('');
+  const [settings, setSettings] = useState({});
+  const [addonName, setAddonName] = useState('');
+  const [addonId, setAddonId] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Load instance data and addon info when component mounts or instanceId changes
+  useEffect(() => {
+    try {
+      const data = getAddonInstanceData(instanceId);
+      const addon = getAddonById(instanceId);
+      
+      if (!data || !addon) {
+        setError('Could not find addon data');
+        setIsLoading(false);
+        return;
+      }
+      
+      // Update state with the loaded data
+      setTitle(data.title || addon.name);
+      setSettings(data.settings || {});
+      setAddonName(addon.name);
+      setAddonId(addon.id);
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Error loading addon settings:', err);
+      setError('Error loading settings');
+      setIsLoading(false);
+    }
+  }, [instanceId]);
+  
+  // Handle save action
+  const handleSave = () => {
+    onSave(instanceId, { title, settings });
+    onClose();
+  };
+  
+  // Get addon-specific settings fields if the addon defines them
+  const renderAddonSpecificSettings = () => {
+    // Basic implementation - can be extended to support more dynamic settings
+    if (addonId === 'todoTasks') {
+      return (
+        <div className="settings-group">
+          <label htmlFor="list-name">List Name</label>
+          <input
+            id="list-name"
+            type="text"
+            value={settings.listName || ''}
+            onChange={(e) => setSettings({...settings, listName: e.target.value})}
+            className="settings-input"
+            placeholder="My Tasks"
+          />
+        </div>
+      );
+    }
+    
+    if (addonId === 'calendar') {
+      return (
+        <div className="settings-group">
+          <label htmlFor="calendar-color">Calendar Color</label>
+          <input
+            id="calendar-color"
+            type="color"
+            value={settings.calendarColor || '#8B5CF6'}
+            onChange={(e) => setSettings({...settings, calendarColor: e.target.value})}
+            className="settings-color-input"
+          />
+        </div>
+      );
+    }
+    
+    return null;
+  };
+  
+  // Show loading or error state
+  if (isLoading) {
+    return (
+      <div className="addon-settings">
+        <div className="settings-header">
+          <h2>Loading...</h2>
+          <button className="settings-close-btn" onClick={onClose}>×</button>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="addon-settings">
+        <div className="settings-header">
+          <h2>Error</h2>
+          <button className="settings-close-btn" onClick={onClose}>×</button>
+        </div>
+        <div className="settings-content">
+          <p>{error}</p>
+        </div>
+        <div className="settings-footer">
+          <button className="cancel-btn" onClick={onClose}>Close</button>
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="addon-settings">
+      <div className="settings-header">
+        <h2>Edit {addonName}</h2>
+        <button className="settings-close-btn" onClick={onClose}>×</button>
+      </div>
+      
+      <div className="settings-content">
+        <div className="settings-group">
+          <label htmlFor="addon-title">Title</label>
+          <input
+            id="addon-title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="settings-input"
+          />
+        </div>
+        
+        {/* Render addon-specific settings */}
+        {renderAddonSpecificSettings()}
+      </div>
+      
+      <div className="settings-footer">
+        <button className="cancel-btn" onClick={onClose}>Cancel</button>
+        <button className="save-btn" onClick={handleSave}>Save</button>
+      </div>
+    </div>
+  );
+};
+
+// Main GridDashboard Component
 const GridDashboard = () => {
   // State for layouts (responsive)
-  const [layouts, setLayouts] = useState(DEFAULT_LAYOUTS);
+  const [layouts, setLayouts] = useState(null);
   const [currentBreakpoint, setCurrentBreakpoint] = useState('lg');
   const [mounted, setMounted] = useState(false);
   const [darkTheme, setDarkTheme] = useState(true);
-  
-  // Pomodoro activity data
-  const [pomodoroData, setPomodoroData] = useState(
-    Array.from({ length: 8 * 28 }, (_, i) => {
-      const col = i % 28;
-      const row = Math.floor(i / 28);
-      const patternValue = Math.sin((col / 28) * Math.PI * 2 + row) + 
-                      Math.cos((row / 8) * Math.PI * 3);
-      const colIntensity = (col < 7 || (col > 14 && col < 21) || col > 24) ? 0.7 : 0.3;
-      const threshold = 0.2 + colIntensity;
-      let cellType = patternValue > threshold ? 2 : 
-                  patternValue > threshold - 0.5 ? 1 : 0;
-      if (Math.random() < 0.2) {
-        cellType = Math.floor(Math.random() * 3);
-      }
-      return cellType;
-    })
-  );
-  
-  // Pomodoro timer state
-  const [timerActive, setTimerActive] = useState(false);
-  const [timerMode, setTimerMode] = useState('work');
-  const [timeLeft, setTimeLeft] = useState(25 * 60);
-  const [completedPomodoros, setCompletedPomodoros] = useState(0);
-  const [workMode, setWorkMode] = useState(false);
-  
-  // Current month and calendar data
-  const currentMonth = 'March 2025';
-  const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
-  const [selectedDate, setSelectedDate] = useState(11);
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-  const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  
-  // Points and rank
-  const [points, setPoints] = useState(259);
-  const [rank, setRank] = useState(2);
-  
-  // Quick Note state
-  const [quickNote, setQuickNote] = useState("Stop reading my todos 😩");
-  const [isEditingNote, setIsEditingNote] = useState(false);
-  
-  // Task lists
-  const [completedTasks, setCompletedTasks] = useState([
-    'Calendar fix',
-    'Figure out customer Sizzy subscriptions that...',
-    'Pay for hirezify.io',
-    'Ship new landing page vs todoist etc',
-    'Menus don\'t have bg on vaul',
-    'See why users cannot send pass reset email...',
-    'benji email verification doesn\'t work',
-    'Pay mailgun',
-    'Text accountant',
-    'Sizzy downloads for apple silicon',
-    'Refund customer',
-    'fix guy\'s sub on benji',
-    'Move benji to coolify',
-    'Deploy glink',
-    'Make sure ppl can buy sizzy',
-    'Sizzy new subs don\'t load',
-    'Pay PIT for Nov/Dec',
-    'Finalize taxes with accountant',
-    'see PIT email',
-    'appsumo money',
-    'Invoices expenses November',
-    'Invoices income December',
-    'Invoices expenses December'
-  ]);
-  
-  const [todoTasks, setTodoTasks] = useState([
-    'Event ghost for move/create/resize',
-    'Saving on mobile doesnt keep layout on refre...',
-    'Switching dash doesn\'t get remembered in lo...',
-    'When dragging a todo into a section the enti...'
-  ]);
-  
-  const [overdueTasks, setOverdueTasks] = useState([
-    'Send invoices to accountant',
-    'Move emails out of spam',
-    'Clean email inbox',
-    'Daily work demo',
-    'Make finances snapshot'
-  ]);
-
-  const [newTodoText, setNewTodoText] = useState('');
+  const [showAddonPicker, setShowAddonPicker] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [editingAddon, setEditingAddon] = useState(null);
+  const [activeAddons, setActiveAddons] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [recentlyDeleted, setRecentlyDeleted] = useState(null);
+  const [showUndoNotification, setShowUndoNotification] = useState(false);
   
   // Load saved layouts when component mounts
   useEffect(() => {
     setMounted(true);
-    const savedLayouts = localStorage.getItem('dashboardLayouts');
-    if (savedLayouts) {
-      try {
-        setLayouts(JSON.parse(savedLayouts));
-      } catch (e) {
-        console.error('Failed to parse saved layouts', e);
+    
+    try {
+      // Load active addons
+      const addons = getActiveAddons();
+      setActiveAddons(addons);
+      
+      // Load saved layouts
+      const savedLayouts = loadUserLayout();
+      if (savedLayouts) {
+        setLayouts(savedLayouts);
+      } else {
+        // Use default layouts
+        const defaultLayouts = {
+          lg: getDefaultLayout('lg'),
+          md: getDefaultLayout('md'),
+          sm: getDefaultLayout('sm')
+        };
+        
+        // Add layouts for any addons that aren't in default layout
+        addons.forEach(addonId => {
+          const addon = getAddonById(addonId);
+          if (addon) {
+            Object.keys(defaultLayouts).forEach(breakpoint => {
+              // Check if addon is already in layout
+              const exists = defaultLayouts[breakpoint].some(item => item.i === addonId);
+              if (!exists) {
+                // Find position for new addon
+                const nextPosition = findNextAvailablePosition(defaultLayouts[breakpoint]);
+                
+                // Add to layout
+                defaultLayouts[breakpoint].push({
+                  i: addonId,
+                  x: nextPosition.x,
+                  y: nextPosition.y,
+                  w: addon.defaultSize?.w || 6,
+                  h: addon.defaultSize?.h || 6,
+                  minW: addon.defaultSize?.minW || 3,
+                  minH: addon.defaultSize?.minH || 3
+                });
+              }
+            });
+          }
+        });
+        
+        setLayouts(defaultLayouts);
+        // Save the default layouts to localStorage
+        saveUserLayout(defaultLayouts);
       }
+    } catch (error) {
+      console.error("Error loading dashboard:", error);
+      // Reset to defaults if there was an error
+      resetUserLayout();
+      setLayouts({
+        lg: getDefaultLayout('lg'),
+        md: getDefaultLayout('md'),
+        sm: getDefaultLayout('sm')
+      });
+    } finally {
+      setIsLoading(false);
     }
+    
+    // Set theme class on body
+    document.body.className = darkTheme ? 'dark-theme' : 'light-theme';
   }, []);
+  
+  // Apply theme changes
+  useEffect(() => {
+    document.body.className = darkTheme ? 'dark-theme' : 'light-theme';
+  }, [darkTheme]);
   
   // Handle layout changes
   const handleLayoutChange = (currentLayout, allLayouts) => {
     // Save layouts to state and localStorage
     setLayouts(allLayouts);
-    localStorage.setItem('dashboardLayouts', JSON.stringify(allLayouts));
+    saveUserLayout(allLayouts);
   };
   
   // Handle breakpoint changes
@@ -189,364 +467,320 @@ const GridDashboard = () => {
   
   // Reset layouts to default
   const resetLayout = () => {
-    setLayouts(DEFAULT_LAYOUTS);
-    localStorage.removeItem('dashboardLayouts');
+    if (window.confirm("Are you sure you want to reset the dashboard? This will remove all your customizations.")) {
+      resetUserLayout();
+      // Reload page to reset everything
+      window.location.reload();
+    }
   };
   
   // Toggle theme
   const toggleTheme = () => {
     setDarkTheme(!darkTheme);
-    document.body.className = darkTheme ? 'light-theme' : 'dark-theme';
+  };
+
+  // Find next available position for a new addon
+  const findNextAvailablePosition = (layout) => {
+    if (!layout || !Array.isArray(layout) || layout.length === 0) {
+      return { x: 0, y: 0 };
+    }
+    
+    // Find the maximum y-coordinate plus height
+    const maxY = Math.max(...layout.map(item => item.y + item.h), 0);
+    return { x: 0, y: maxY };
   };
   
-  // Format time for display (MM:SS)
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-  
-  // Pomodoro timer controls
-  const startTimer = () => setTimerActive(true);
-  const pauseTimer = () => setTimerActive(false);
-  const resetTimer = () => {
-    setTimerActive(false);
-    setTimeLeft(25 * 60);
-    setTimerMode('work');
-  };
-  
-  // Toggle work mode
-  const toggleWorkMode = () => setWorkMode(!workMode);
-  
-  // Handle task completion
-  const toggleTaskCompletion = (task, sourceList) => {
-    if (sourceList === 'todo') {
-      setTodoTasks(todoTasks.filter(t => t !== task));
-      setCompletedTasks([...completedTasks, task]);
-      setPoints((prev) => prev + 10);
-    } else if (sourceList === 'overdue') {
-      setOverdueTasks(overdueTasks.filter(t => t !== task));
-      setCompletedTasks([...completedTasks, task]);
-      setPoints((prev) => prev + 5);
-    } else if (sourceList === 'completed') {
-      setCompletedTasks(completedTasks.filter(t => t !== task));
-      setTodoTasks([...todoTasks, task]);
-      setPoints((prev) => Math.max(0, prev - 10));
+  // Add addon to dashboard
+  const handleAddAddon = (addonId) => {
+    try {
+      const instanceId = addAddonToDashboard(addonId);
+      
+      if (instanceId) {
+        // Update active addons
+        setActiveAddons(getActiveAddons());
+        
+        // Update layouts if needed
+        const addon = getAddonById(instanceId);
+        if (addon && layouts) {
+          const newLayouts = { ...layouts };
+          
+          // Find a good position for the new addon
+          const nextPosition = findNextAvailablePosition(layouts[currentBreakpoint] || []);
+          
+          // Add to all breakpoints
+          Object.keys(newLayouts).forEach(breakpoint => {
+            if (!Array.isArray(newLayouts[breakpoint])) {
+              newLayouts[breakpoint] = [];
+            }
+            
+            newLayouts[breakpoint].push({
+              i: instanceId,
+              x: nextPosition.x,
+              y: nextPosition.y,
+              w: addon.defaultSize?.w || 6,
+              h: addon.defaultSize?.h || 6,
+              minW: addon.defaultSize?.minW || 3,
+              minH: addon.defaultSize?.minH || 3
+            });
+          });
+          
+          setLayouts(newLayouts);
+          saveUserLayout(newLayouts);
+        }
+      }
+    } catch (error) {
+      console.error("Error adding addon:", error);
+      alert("Failed to add addon. Please try again.");
     }
   };
   
-  // Handle adding a new todo
-  const addNewTodo = (e) => {
-    if (e.key === 'Enter' && newTodoText.trim()) {
-      setTodoTasks([...todoTasks, newTodoText.trim()]);
-      setNewTodoText('');
+  // Remove addon from dashboard without confirmation - with undo capability
+  const handleRemoveAddon = (instanceId) => {
+    try {
+      // Store the addon data for potential undo
+      const addonToDelete = {
+        instanceId,
+        instanceData: getAddonInstanceData(instanceId),
+        layoutPositions: {}
+      };
+      
+      // Store layout positions for all breakpoints
+      if (layouts) {
+        Object.keys(layouts).forEach(breakpoint => {
+          const layoutItem = layouts[breakpoint].find(item => item.i === instanceId);
+          if (layoutItem) {
+            addonToDelete.layoutPositions[breakpoint] = { ...layoutItem };
+          }
+        });
+      }
+      
+      // Create a new reference of the layouts object to ensure React detects the change
+      const layoutsCopy = JSON.parse(JSON.stringify(layouts));
+      
+      // Remove the addon from all breakpoints directly
+      Object.keys(layoutsCopy).forEach(breakpoint => {
+        layoutsCopy[breakpoint] = layoutsCopy[breakpoint].filter(item => item.i !== instanceId);
+      });
+      
+      // Remove from addon manager
+      removeAddonFromDashboard(instanceId);
+      
+      // Update the state with the new layouts
+      setLayouts(layoutsCopy);
+      saveUserLayout(layoutsCopy);
+      
+      // Update active addons state
+      setActiveAddons(getActiveAddons());
+      
+      // Set recently deleted for undo functionality
+      setRecentlyDeleted(addonToDelete);
+      setShowUndoNotification(true);
+      
+      // Auto-hide the undo notification after 5 seconds
+      setTimeout(() => {
+        setShowUndoNotification(false);
+      }, 5000);
+    } catch (error) {
+      console.error("Error removing addon:", error);
+      alert("Failed to remove addon. Please try again.");
     }
   };
   
-  // Select date in calendar
-  const selectDate = (day) => {
-    setSelectedDate(day);
+  // Handle undo functionality to restore recently deleted addon
+  const handleUndo = () => {
+    if (!recentlyDeleted) return;
+    
+    try {
+      const { instanceId, instanceData, layoutPositions } = recentlyDeleted;
+      
+      // Re-add the addon instance to the addon manager
+      const activeAddons = getActiveAddons();
+      activeAddons.push(instanceId);
+      localStorage.setItem('activeAddons', JSON.stringify(activeAddons));
+      
+      // Restore the instance data
+      const addonInstances = JSON.parse(localStorage.getItem('addonInstances') || '{}');
+      addonInstances[instanceId] = instanceData;
+      localStorage.setItem('addonInstances', JSON.stringify(addonInstances));
+      
+      // Restore layouts
+      if (layouts) {
+        const updatedLayouts = { ...layouts };
+        
+        Object.keys(updatedLayouts).forEach(breakpoint => {
+          if (layoutPositions[breakpoint]) {
+            updatedLayouts[breakpoint].push(layoutPositions[breakpoint]);
+          }
+        });
+        
+        setLayouts(updatedLayouts);
+        saveUserLayout(updatedLayouts);
+      }
+      
+      // Update active addons
+      setActiveAddons(getActiveAddons());
+      
+      // Clear undo state
+      setRecentlyDeleted(null);
+      setShowUndoNotification(false);
+    } catch (error) {
+      console.error("Error undoing deletion:", error);
+      alert("Failed to restore addon. Please try again.");
+    }
   };
   
-  // Only start rendering once component is mounted
-  if (!mounted) return <div>Loading...</div>;
+  // Edit addon settings
+  const handleEditAddon = (instanceId) => {
+    setEditingAddon(instanceId);
+    setShowSettings(true);
+  };
+  
+  // Save addon settings
+  const handleSaveSettings = (instanceId, data) => {
+    try {
+      if (updateAddonInstance(instanceId, data)) {
+        // Update active addons to trigger re-render
+        setActiveAddons([...getActiveAddons()]);
+      }
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      alert("Failed to save settings. Please try again.");
+    }
+  };
+  
+  // Render addon component
+  const renderAddon = (instanceId) => {
+    try {
+      const baseAddon = getAddonById(instanceId);
+      const instanceData = getAddonInstanceData(instanceId);
+      
+      if (!baseAddon) return (
+        <div className="error-message">Addon not found</div>
+      );
+      
+      const AddonComponent = baseAddon.component;
+      const customTitle = instanceData?.title || baseAddon.name;
+      
+      // Pass instance-specific settings to the component
+      const addonSettings = instanceData?.settings || {};
+      
+      return (
+        <DashboardCard 
+          title={customTitle}
+          icon={baseAddon.icon}
+          id={instanceId}
+          onRemove={handleRemoveAddon}
+          onEdit={handleEditAddon}
+          customizable={true}
+        >
+          <ErrorBoundary
+            fallback={(error) => (
+              <div className="error-message">
+                <h4>Error in addon</h4>
+                <p>{error?.message || 'An unknown error occurred'}</p>
+                <button onClick={() => handleRemoveAddon(instanceId)}>Remove</button>
+              </div>
+            )}
+          >
+            <AddonComponent settings={addonSettings} instanceId={instanceId} />
+          </ErrorBoundary>
+        </DashboardCard>
+      );
+    } catch (error) {
+      console.error(`Error rendering addon ${instanceId}:`, error);
+      return (
+        <DashboardCard 
+          title="Error"
+          id={instanceId}
+          onRemove={handleRemoveAddon}
+        >
+          <div className="error-message">
+            Failed to load this addon. <button onClick={() => handleRemoveAddon(instanceId)}>Remove</button>
+          </div>
+        </DashboardCard>
+      );
+    }
+  };
+  
+  // Undo notification component
+  const UndoNotification = () => {
+    if (!showUndoNotification) return null;
+    
+    return (
+      <div className="undo-notification">
+        <span>Addon removed</span>
+        <button onClick={handleUndo}>Undo</button>
+      </div>
+    );
+  };
+  
+  // Only start rendering once component is mounted and layouts are loaded
+  if (!mounted || !layouts) {
+    return (
+      <div className="loading">
+        {isLoading ? "Loading..." : "Error loading dashboard. Please refresh the page."}
+      </div>
+    );
+  }
   
   return (
     <div className={`grid-dashboard ${darkTheme ? 'dark-theme' : 'light-theme'}`}>
       {/* Layout Controls */}
-      <div className="layout-controls">
-        <button className="layout-btn" onClick={resetLayout}>Reset Layout</button>
-        <button className="layout-btn" onClick={toggleTheme}>
-          {darkTheme ? <Sun size={16} /> : <Moon size={16} />}
-          {darkTheme ? 'Light Mode' : 'Dark Mode'}
-        </button>
-      </div>
+      <DashboardControls
+        onAddClick={() => setShowAddonPicker(true)}
+        onResetClick={resetLayout}
+        onSaveClick={() => saveUserLayout(layouts)}
+        onThemeToggle={toggleTheme}
+        darkTheme={darkTheme}
+      />
+      
+      {/* Addon Picker Modal */}
+      {showAddonPicker && (
+        <div className="modal-overlay">
+          <AddonPicker 
+            onAddAddon={handleAddAddon} 
+            onClose={() => setShowAddonPicker(false)} 
+          />
+        </div>
+      )}
+      
+      {/* Addon Settings Modal */}
+      {showSettings && (
+        <div className="modal-overlay">
+          <AddonSettings 
+            instanceId={editingAddon}
+            onClose={() => {
+              setShowSettings(false);
+              setEditingAddon(null);
+            }}
+            onSave={handleSaveSettings}
+          />
+        </div>
+      )}
       
       {/* Responsive Grid Layout */}
       <ResponsiveGridLayout
-        className="layout"
+        className="dashboard-layout"
         layouts={layouts}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 18, md: 12, sm: 6, xs: 4, xxs: 2 }}
-        rowHeight={40}
-        margin={[16, 16]}
-        containerPadding={[16, 16]}
+        breakpoints={GRID_CONFIG.breakpoints}
+        cols={GRID_CONFIG.cols}
+        rowHeight={GRID_CONFIG.rowHeight}
+        margin={GRID_CONFIG.margin}
+        containerPadding={GRID_CONFIG.containerPadding}
         onLayoutChange={handleLayoutChange}
         onBreakpointChange={handleBreakpointChange}
-        isDraggable={true}
-        isResizable={true}
-        useCSSTransforms={true}
         draggableHandle=".card-header"
+        resizeHandles={['se']}
       >
-        {/* Pomodoro Activity */}
-        <div key="pomodoroActivity">
-          <DashboardCard title="Pomodoro Activity" icon={Clock}>
-            <div className="flex justify-between mb-2">
-              {months.map(month => (
-                <span key={month} className="text-xs">{month}</span>
-              ))}
-            </div>
-            
-            <div className="grid grid-cols-28">
-              {pomodoroData.map((value, i) => (
-                <div 
-                  key={i} 
-                  className={`pomodoro-cell ${
-                    value === 0 ? 'bg-gray-700' : 
-                    value === 1 ? 'bg-red-500' : 
-                    'bg-red-600'
-                  }`}
-                />
-              ))}
-            </div>
-            
-            <div className="flex justify-between mt-2">
-              <span className="text-xs text-gray-400">No pomodoros</span>
-              <span className="text-xs text-gray-400">7+ pomodoros</span>
-            </div>
-          </DashboardCard>
-        </div>
-        
-        {/* Calendar */}
-        <div key="calendar">
-          <DashboardCard title={currentMonth} icon={Calendar}>
-            <div className="grid grid-cols-7 gap-1 mb-1">
-              {weekDays.map(day => (
-                <div key={day} className="text-xs text-center text-gray-500">{day}</div>
-              ))}
-            </div>
-            
-            <div className="grid grid-cols-7 gap-1">
-              {days.map(day => (
-                <div 
-                  key={day} 
-                  className={`calendar-day ${day === selectedDate ? 'today' : ''}`}
-                  onClick={() => selectDate(day)}
-                >
-                  {day}
-                </div>
-              ))}
-            </div>
-          </DashboardCard>
-        </div>
-        
-        {/* Position */}
-        <div key="position">
-          <DashboardCard title="Position" icon={BarChart2} accentColor="text-yellow-500">
-            <div className="flex items-center mt-2">
-              <div className="ml-4 bg-blue-400 w-8 h-8 rounded-full flex items-center justify-center text-black font-bold">Z</div>
-              <div className="ml-2">
-                <div className="text-sm">{points} points</div>
-                <div className="text-xs text-gray-400">Rank {rank} of 17</div>
-              </div>
-            </div>
-          </DashboardCard>
-        </div>
-        
-        {/* Work Mode */}
-        <div key="workMode">
-          <DashboardCard title="Work Mode" icon={Briefcase}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <button
-                  className="theme-toggle-btn"
-                  onClick={toggleTheme}
-                  title={darkTheme ? "Switch to light theme" : "Switch to dark theme"}
-                >
-                  {darkTheme ? <Sun size={18} /> : <Moon size={18} />}
-                </button>
-                <button 
-                  className={`button ${workMode ? 'active' : ''}`}
-                  onClick={toggleWorkMode}
-                >
-                  <Briefcase size={18} />
-                </button>
-              </div>
-            </div>
-          </DashboardCard>
-        </div>
-        
-        {/* Quick Note */}
-        <div key="quickNote">
-          <DashboardCard title="Quick Note">
-            <div className="flex flex-col">
-              {isEditingNote ? (
-                <input
-                  type="text"
-                  value={quickNote}
-                  onChange={(e) => setQuickNote(e.target.value)}
-                  onBlur={() => setIsEditingNote(false)}
-                  onKeyDown={(e) => e.key === 'Enter' && setIsEditingNote(false)}
-                  autoFocus
-                  className="input mt-2"
-                />
-              ) : (
-                <p 
-                  className="text-sm text-gray-400 cursor-pointer"
-                  onClick={() => setIsEditingNote(true)}
-                >
-                  {quickNote}
-                </p>
-              )}
-            </div>
-          </DashboardCard>
-        </div>
-        
-        {/* Completed Tasks */}
-        <div key="completedTasks">
-          <DashboardCard title="Work done today" icon={CheckCircle} accentColor="text-green-500">
-            <div className="task-header">
-              <span className="task-tag">work</span>
-            </div>
-            
-            <div className="task-container">
-              <ul className="task-list">
-                {completedTasks.map((task, i) => (
-                  <li 
-                    key={i} 
-                    className="task-item"
-                    onClick={() => toggleTaskCompletion(task, 'completed')}
-                  >
-                    <CheckCircle size={16} className="mt-0.5 text-purple-500" />
-                    <span className="text-sm">{task}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </DashboardCard>
-        </div>
-        
-        {/* Todo Tasks */}
-        <div key="todoTasks">
-          <DashboardCard title="Work todos today" icon={Circle} accentColor="text-blue-500">
-            <div className="task-header">
-              <span className="task-tag">work</span>
-            </div>
-            
-            <div className="mb-4">
-              <input 
-                type="text" 
-                placeholder="Quick add todo..." 
-                className="input"
-                value={newTodoText}
-                onChange={(e) => setNewTodoText(e.target.value)}
-                onKeyDown={addNewTodo}
-              />
-            </div>
-            
-            <div className="task-container">
-              <ul className="task-list">
-                {todoTasks.map((task, i) => (
-                  <li 
-                    key={i} 
-                    className="task-item"
-                    onClick={() => toggleTaskCompletion(task, 'todo')}
-                  >
-                    <Circle size={16} className="mt-0.5 text-gray-500" />
-                    <span className="text-sm">{task}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </DashboardCard>
-        </div>
-        
-        {/* Overdue Tasks */}
-        <div key="overdueTasks">
-          <DashboardCard title="Forgotten" icon={Clock} accentColor="text-blue-500">
-            <div className="task-header">
-              <span className="task-tag">work</span>
-            </div>
-            
-            <div className="subtasks">
-              <div className="subtask-group">
-                <div className="subtask-header">
-                  <Circle size={14} className="text-gray-400" />
-                  <h3 className="text-sm text-gray-400">Overplanned</h3>
-                </div>
-                <ul className="subtask-list">
-                  <li className="subtask-item text-gray-400">
-                    <span className="text-sm">Ask accountant about crypto tax</span>
-                  </li>
-                  <li className="subtask-item text-gray-400">
-                    <span className="text-sm">manage payment details button doe...</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="subtask-group mt-4">
-                <div className="subtask-header">
-                  <AlertTriangle size={14} className="text-red-500" />
-                  <h3 className="text-sm text-red-500">Overdue</h3>
-                </div>
-                <ul className="task-list">
-                  {overdueTasks.map((task, i) => (
-                    <li 
-                      key={i} 
-                      className="task-item"
-                      onClick={() => toggleTaskCompletion(task, 'overdue')}
-                    >
-                      <Circle size={16} className="mt-0.5 text-red-500" />
-                      <span className="text-sm text-red-500">{task}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </DashboardCard>
-        </div>
-        
-        {/* Pomodoro Counter */}
-        <div key="pomodoroCounter">
-          <DashboardCard title="Pomodoros" icon={Clock}>
-            <div className="pomodoro-container">
-              <div className="timer-mode">
-                <span className="text-sm">{timerMode === 'work' ? 'Work' : 'Break'}</span>
-              </div>
-              
-              <div className="flex justify-center">
-                <div 
-                  className="pomodoro-circle"
-                  onClick={timerActive ? pauseTimer : startTimer}
-                >
-                  <span className="text-xl font-bold text-red-500">
-                    {timerActive ? formatTime(timeLeft) : 'Start'}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="flex justify-center gap-4 mt-4">
-                {timerActive ? (
-                  <button onClick={pauseTimer} className="text-red-500">
-                    <Pause size={20} />
-                  </button>
-                ) : (
-                  <button onClick={startTimer} className="text-red-500">
-                    <Play size={20} />
-                  </button>
-                )}
-                {!timerActive && timeLeft !== 25 * 60 && (
-                  <button onClick={resetTimer} className="text-red-500">
-                    <X size={20} />
-                  </button>
-                )}
-              </div>
-              
-              <div className="flex justify-center gap-2 mt-4">
-                {Array.from({ length: 11 }, (_, i) => (
-                  <div 
-                    key={i} 
-                    className={`pomodoro-dot ${i < completedPomodoros ? 'bg-red-500' : 'bg-gray-600'}`}
-                  />
-                ))}
-              </div>
-              <div className="text-center text-xs text-gray-400 mt-2">
-                {timerActive ? 'Running' : completedPomodoros > 0 ? `${completedPomodoros} completed` : '0 min'}
-              </div>
-            </div>
-          </DashboardCard>
-        </div>
+        {activeAddons.map(instanceId => (
+          <div key={instanceId}>
+            {renderAddon(instanceId)}
+          </div>
+        ))}
       </ResponsiveGridLayout>
+      
+      {/* Undo Notification */}
+      <UndoNotification />
     </div>
   );
 };

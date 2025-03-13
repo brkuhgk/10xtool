@@ -1,22 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import GridDashboard from './components/GridDashboard';
-import { GridDashboardWrapper } from './components/ResponsiveHelper';
-import { TouchInteractionProvider } from './components/TouchInteractionProvider';
 
 function App() {
-  // Clear any corrupted layout data on error
-  React.useEffect(() => {
+  localStorage.removeItem('dashboardLayouts');
+
+
+  // Error handling for layout corruption
+  useEffect(() => {
     const handleError = (event) => {
       if (event.error && (
-        event.error.message.includes('width') || 
-        event.error.message.includes('undefined') ||
-        event.error.message.includes('null')
+        event.error.message.includes('undefined') || 
+        event.error.message.includes('null') ||
+        event.error.message.includes('width')
       )) {
-        console.warn('Detected potential layout corruption, resetting saved layout');
+        console.warn('Detected potential layout corruption, resetting layouts');
         localStorage.removeItem('dashboardLayouts');
-        // Optionally reload the page after clearing
-        // window.location.reload();
+        localStorage.removeItem('activeAddons');
+        window.location.reload();
       }
     };
 
@@ -26,11 +27,7 @@ function App() {
 
   return (
     <div className="App">
-      <TouchInteractionProvider>
-        <GridDashboardWrapper>
-          <GridDashboard />
-        </GridDashboardWrapper>
-      </TouchInteractionProvider>
+      <GridDashboard />
     </div>
   );
 }

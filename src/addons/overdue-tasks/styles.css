@@ -1,0 +1,341 @@
+.overdue-tasks-addon {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
+  
+  .tasks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .tasks-icon {
+    color: #EF4444; /* Red for warning */
+  }
+  
+  .tasks-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #EF4444;
+    margin: 0;
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .task-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 0.25rem;
+    color: #9CA3AF;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .task-action-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #E2E8F0;
+  }
+  
+  .filter-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #1E293B;
+    border-radius: 0.5rem;
+    z-index: 10;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.2s ease;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .filter-section {
+    margin-bottom: 1rem;
+  }
+  
+  .filter-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #9CA3AF;
+    margin-bottom: 0.5rem;
+  }
+  
+  .filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .filter-option {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 0.25rem;
+    color: #E2E8F0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .filter-option:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .filter-option.active {
+    background-color: #EF4444;
+    color: white;
+  }
+  
+  .filter-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .close-filters-btn {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    background-color: #2D3748;
+    border: none;
+    border-radius: 0.25rem;
+    color: #E2E8F0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .close-filters-btn:hover {
+    background-color: #4A5568;
+  }
+  
+  .tasks-container {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+  
+  .no-tasks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #9CA3AF;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .no-tasks-icon {
+    color: rgba(239, 68, 68, 0.3);
+  }
+  
+  .tasks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .task-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: rgba(255, 255, 255, 0.02);
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  
+  .task-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .task-item.overdue {
+    border-left: 3px solid #EF4444;
+  }
+  
+  .task-item.due-today {
+    border-left: 3px solid #F59E0B;
+  }
+  
+  .task-item.due-soon {
+    border-left: 3px solid #10B981;
+  }
+  
+  .task-priority {
+    margin-right: 0.75rem;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .priority-icon {
+    color: #9CA3AF;
+  }
+  
+  .priority-icon.overdue {
+    color: #EF4444;
+  }
+  
+  .task-content {
+    flex-grow: 1;
+  }
+  
+  .task-text {
+    font-size: 0.875rem;
+    color: #E2E8F0;
+    margin-bottom: 0.25rem;
+  }
+  
+  .task-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+  }
+  
+  .task-tag {
+    padding: 0.125rem 0.375rem;
+    border-radius: 1rem;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  
+  .task-due {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #9CA3AF;
+  }
+  
+  .task-due.overdue {
+    color: #EF4444;
+    font-weight: 500;
+  }
+  
+  .task-due.due-today {
+    color: #F59E0B;
+    font-weight: 500;
+  }
+  
+  .task-due.due-soon {
+    color: #10B981;
+  }
+  
+  .task-complete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #9CA3AF;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0.25rem;
+    margin-left: 0.5rem;
+  }
+  
+  .task-complete-btn:hover {
+    color: #10B981;
+    transform: scale(1.1);
+  }
+  
+  /* Custom scrollbar */
+  .tasks-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .tasks-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+  }
+  
+  .tasks-container::-webkit-scrollbar-thumb {
+    background: rgba(239, 68, 68, 0.4);
+    border-radius: 3px;
+  }
+  
+  .tasks-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(239, 68, 68, 0.6);
+  }
+  
+  /* Light theme overrides */
+  :global(.light-theme) .task-action-btn {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #6B7280;
+  }
+  
+  :global(.light-theme) .task-action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .filter-panel {
+    background-color: #F8FAFC;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  :global(.light-theme) .filter-option {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .filter-option:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  :global(.light-theme) .close-filters-btn {
+    background-color: #E2E8F0;
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .close-filters-btn:hover {
+    background-color: #CBD5E1;
+  }
+  
+  :global(.light-theme) .task-text {
+    color: #1E293B;
+  }
+  
+  :global(.light-theme) .task-item {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  :global(.light-theme) .task-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
